@@ -16,6 +16,7 @@ func main() {
 	log.Infof("Starting proxy at port %s", port)
 
 	http.Handle("/", &handlers.LoadHandler{})
+	http.Handle("/__duckclick__/configure", &handlers.ConfigureHandler{})
 	http.Handle("/__duckclick__/assets/", http.StripPrefix("/__duckclick__/assets/", fileServer))
 	http.ListenAndServe(host, nil)
 }
