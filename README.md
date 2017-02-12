@@ -25,3 +25,15 @@ To add new dependecies do:
 ```sh
 glide get <dependency>
 ```
+
+## Examples
+
+```sh
+curl -v "http://localhost:7275/__duckclick__/configure" -d '{
+  "url": "http://todomvc.com",
+  "host": "todomvc.com",
+  "current_path": "examples/react"
+}'
+
+curl -v "http://localhost:7275/node_modules/todomvc-app-css/index.css" --cookie "duckclick.proxy.configure=eyJ1cmwiOiJodHRwOi8vdG9kb212Yy5jb20iLCJob3N0IjoidG9kb212Yy5jb20iLCJjdXJyZW50X3BhdGgiOiJleGFtcGxlcy9yZWFjdCJ9"
+```
