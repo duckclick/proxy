@@ -11,10 +11,12 @@ import (
 func main() {
 	port := getPort()
 	host := fmt.Sprintf(":%s", port)
+	fileServer := http.FileServer(http.Dir("public"))
 
 	log.Infof("Starting proxy at port %s", port)
 
 	http.Handle("/", &handlers.LoadHandler{})
+	http.Handle("/__duckclick__/assets/", http.StripPrefix("/__duckclick__/assets/", fileServer))
 	http.ListenAndServe(host, nil)
 }
 
