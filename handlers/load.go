@@ -19,9 +19,12 @@ func (h *LoadHandler) ServeHTTP(response http.ResponseWriter, request *http.Requ
 	if err != nil {
 		log.WithError(err).Errorf("Error parsing template")
 		response.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(response, `{"message": "Error parsing template"}`)
+		fmt.Fprint(response, `Error parsing template`)
 		return
 	}
+
+	response.Header().Set("Access-Control-Allow-Origin", "*")
+	response.Header().Set("Access-Control-Allow-Headers", "content-type")
 
 	data := struct{}{}
 	err = loadTemplate.Execute(response, data)
@@ -29,6 +32,6 @@ func (h *LoadHandler) ServeHTTP(response http.ResponseWriter, request *http.Requ
 	if err != nil {
 		log.WithError(err).Errorf("Error running template")
 		response.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(response, `{"message": "Error running template"}`)
+		fmt.Fprint(response, `Error running template`)
 	}
 }
