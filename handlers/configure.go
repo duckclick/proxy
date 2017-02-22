@@ -45,7 +45,7 @@ func (h *ConfigureHandler) ServeHTTP(response http.ResponseWriter, request *http
 		return
 	}
 
-	err = createCookie(configurationEntry, response, request)
+	err = createCookie(configurationEntry, response)
 	if err != nil {
 		response.WriteHeader(http.StatusUnprocessableEntity)
 		fmt.Fprint(response, `{"message": "Failed to create cookie"}`)
@@ -57,7 +57,7 @@ func (h *ConfigureHandler) ServeHTTP(response http.ResponseWriter, request *http
 	fmt.Fprint(response, `{"configured": true}`)
 }
 
-func createCookie(entry ConfigurationEntry, response http.ResponseWriter, request *http.Request) error {
+func createCookie(entry ConfigurationEntry, response http.ResponseWriter) error {
 	value, err := json.Marshal(entry)
 
 	if err != nil {
