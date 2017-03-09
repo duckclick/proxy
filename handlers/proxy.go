@@ -52,8 +52,6 @@ func (p *Proxy) Handle(response http.ResponseWriter) {
 		return
 	}
 
-	log.Infof("proxy %s %+v %s", request.Method, p.target, proxyResponse.Status)
-
 	defer proxyResponse.Body.Close()
 	body, err := ioutil.ReadAll(proxyResponse.Body)
 	if err != nil {
@@ -63,6 +61,17 @@ func (p *Proxy) Handle(response http.ResponseWriter) {
 		return
 	}
 
+	originalContentType := proxyResponse.Header["Content-Type"][0]
+
+	log.Infof(
+		"proxy %s %+v, content-type: %s, %s",
+		request.Method,
+		p.target,
+		originalContentType,
+		proxyResponse.Status,
+	)
+
+	response.Header().Set("Content-Type", originalContentType)
 	response.WriteHeader(http.StatusOK)
 	fmt.Fprint(response, string(body))
 }
