@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // Proxy definition
@@ -17,10 +18,12 @@ type Proxy struct {
 // NewProxy - proxy factory
 func NewProxy(configurationEntry ConfigurationEntry, request *http.Request) *Proxy {
 	targetURL, _ := url.Parse(configurationEntry.URL)
+	fullPath := configurationEntry.CurrentPath + request.RequestURI
+
 	proxyURL := &url.URL{
 		Scheme: targetURL.Scheme,
 		Host:   targetURL.Host,
-		Path:   configurationEntry.CurrentPath + request.RequestURI,
+		Path:   normalizeURL(fullPath),
 	}
 
 	return &Proxy{
@@ -74,4 +77,8 @@ func (p *Proxy) Handle(response http.ResponseWriter) {
 	response.Header().Set("Content-Type", originalContentType)
 	response.WriteHeader(http.StatusOK)
 	fmt.Fprint(response, string(body))
+}
+
+func normalizeURL(url string) string {
+	return strings.Replace(url, "//", "/", -1)
 }
