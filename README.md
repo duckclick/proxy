@@ -2,6 +2,14 @@
 
 ## Running
 
+Compile the assets:
+```sh
+cd frontend/
+yarn install
+yarn build
+```
+
+Run the server:
 ```sh
 go run main.go
 ```

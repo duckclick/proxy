@@ -4,3 +4,6 @@ vendor/
 *coverprofile
 proxy.iml
 .idea/
+public/*
+!public/.keep
+frontend/node_modules

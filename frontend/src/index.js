@@ -1,7 +1,5 @@
-console.log('frame.js')
-
 const onMessage = (event) => {
-  if (event.origin !== 'http://localhost:7276') {
+  if (event.origin !== BEAK_HOST) {
     return
   }
 
