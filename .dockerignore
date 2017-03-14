@@ -1,0 +1,4 @@
+Dockerfile
+vendor/
+frontend/node_modules/
+public/frame.js

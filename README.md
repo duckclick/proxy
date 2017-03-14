@@ -34,6 +34,18 @@ To add new dependecies do:
 glide get <dependency>
 ```
 
+Build an image with docker
+
+```sh
+docker build -t proxy .
+```
+
+Run a docker container
+
+```sh
+docker run --rm -t -p 7275:7275 -e "BEAK_HOST=http://localhost:7276" proxy
+```
+
 ## Examples
 
 ```sh
