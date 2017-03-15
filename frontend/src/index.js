@@ -1,3 +1,13 @@
+import stringToLink from './string-to-link'
+
+const schedule = (condition, callback) => {
+  setTimeout(() => {
+    condition()
+      ? callback()
+      : schedule(condition, callback)
+  }, 10)
+}
+
 const onMessage = (event) => {
   if (event.origin !== BEAK_HOST) {
     return
@@ -9,22 +19,41 @@ const onMessage = (event) => {
   switch (message.cmd) {
     case 'renderFrame': {
       const head = document.querySelector('head')
+      const domTitle = head.querySelector('title')
 
-      if (head.innerHTML !== message.payload.head) {
-        head.innerHTML = message.payload.head
+      const { links_checksum, title, links } = message.payload.head
+
+      const previousLinkChecksum = domTitle.getAttribute('data-checksum')
+      domTitle.setAttribute('data-checksum', links_checksum)
+      domTitle.innerHTML = title
+
+      let linksLoaded = 0
+      const increaseLinkLoaded = () => linksLoaded++
+
+      if (previousLinkChecksum !== links_checksum) {
+        links.map((link) => head.appendChild(stringToLink(link, increaseLinkLoaded)))
       }
 
-      const body = document.querySelector('body')
-      const root = body.querySelector('#__duckclick-root__')
-      body.innerHTML = message.payload.body
+      schedule(
+        () => linksLoaded >= links.length,
+        () => {
+          if (!!previousLinkChecksum) {
+            document.querySelectorAll(`.link-${previousLinkChecksum}`).forEach((e) => e.remove())
+          }
 
-      Object
-        .keys(message.payload.body_attributes)
-        .forEach((attr) => {
-          body.setAttribute(attr, message.payload.body_attributes[attr])
-        })
+          const body = document.querySelector('body')
+          const root = body.querySelector('#__duckclick-root__')
+          body.innerHTML = message.payload.body
 
-      body.appendChild(root)
+          Object
+            .keys(message.payload.body_attributes)
+            .forEach((attr) => {
+              body.setAttribute(attr, message.payload.body_attributes[attr])
+            })
+
+          body.appendChild(root)
+        }
+      )
       break
     }
     case 'configure': {
